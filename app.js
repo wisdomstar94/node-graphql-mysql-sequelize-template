@@ -6,10 +6,6 @@ const { ApolloServer } = require('apollo-server-express');
 require('dotenv').config();
 
 // graphql files
-// const typeDefs = require('./graphql/schemas');
-// const resolvers = require('./graphql/resolvers');
-// const context = require('./graphql/context');
-
 const graphqls = require('./graphql/index');
 const context = require('./graphql/context');
 

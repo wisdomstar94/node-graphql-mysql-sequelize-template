@@ -16,10 +16,12 @@
   "author": "shinjaehyeon",
   "license": "ISC",
   "dependencies": {
+    "apollo-server-express": "^3.5.0",
     "cookie-parser": "^1.4.6",
     "debug": "^4.3.3",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
+    "graphql": "^15.8.0",
     "http-errors": "^2.0.0",
     "mysql2": "^2.3.3",
     "sequelize": "^6.12.2"

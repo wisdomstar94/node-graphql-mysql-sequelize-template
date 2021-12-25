@@ -47,9 +47,9 @@ RUN service mysql start
 COPY mysql_init /home/mysql_init
 WORKDIR /home/mysql_init
 RUN sed -i 's/\r$//' mysql_init.sh
-RUN sed -i 's/\r$//' mysql_init_data.sh
+# RUN sed -i 's/\r$//' mysql_init_data.sh
 RUN sh mysql_init.sh 
-RUN sh mysql_init_data.sh 
+# RUN sh mysql_init_data.sh 
 
 # 컨테이너 실행시 Mysql 자동 시작되도록 설정
 RUN sed -i'' -r -e "/export LANG=ko_KR.UTF-8/a\service mysql start" /root/.bashrc

@@ -21,7 +21,7 @@ Node.js의 Express프레임워크를 기반으로 Mysql을 Sequelize와 GraphQL�
 
 1. docker run -i -t -d --privileged -p 3306:3306 -p 8040:8040 --name node-graphql-mysql-sequelize-template wisdomstar94/node-graphql-mysql-sequelize-template:latest
 2. Mysql 구동 및 node 프로젝트 구동시 약간의 시간이 걸릴 수 있으니 10초 ~ 30초 정도 기다려주세요.
-3. 이제 http://localhost:8040/api 으로 graphql 을 체험해 보실 수 있습니다.
+3. 이제 http://localhost:8040/api 으로 graphql 을 체험해 보실 수 있습니다. (어떤 규격으로 요청을 보내야 하는지는 하단에 표기되어 있습니다.)
 4. DB 접속 정보 
 - ip : localhost
 - port : 3306

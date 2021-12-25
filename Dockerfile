@@ -34,16 +34,19 @@ RUN wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
 RUN (echo 7 ; echo 1 ; echo 1 ; echo 4) | dpkg -i mysql-apt-config_0.8.12-1_all.deb
 RUN apt-get update
 RUN apt-cache policy mysql-server
-RUN (echo mysql-community-server mysql-community-server/root-pass password '112233!@#'; echo mysql-community-server mysql-community-server/re-root-poss password '112233!@#') | apt install -y -f mysql-client=5.7* mysql-community-server=5.7* mysql-server=5.7*
-
-# 외부에서 Mysql 에 접속할 수 있게 수정
+RUN DEBIAN_FRONTEND=noninteractive apt install -y -f mysql-client=5.7* mysql-community-server=5.7* mysql-server=5.7*
 RUN sed -i'' -r -e "s/127.0.0.1/0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
+RUN service mysql start
 
 # Mysql 초기 설정
-RUN COPY mysql_init.sh /home/init/mysql_init.sh
-WORKDIR /home/init
-RUN sed -i 's/\r$//' mysql_init.sh
-RUN sh mysql_init.sh 
+RUN mysql -e "SET PASSWORD FOR root@localhost = PASSWORD('112233abc'); FLUSH PRIVILEGES;"
+RUN mysql -e "CREATE DATABASE test_database default CHARACTER SET=utf8 COLLATE=utf8_general_ci;"
+RUN mysql -e "CREATE USER 'root'@'172.17.0.1' IDENTIFIED BY '112233abc';"
+RUN mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'172.17.0.1' IDENTIFIED BY '112233abc' WITH GRANT OPTION;"
+RUN mysql -e "FLUSH PRIVILEGES;"
+
+# 컨테이너 실행시 Mysql 자동 시작되도록 설정
+RUN sed -i'' -r -e "/export LANG=ko_KR.UTF-8/a\service mysql start" /etc/bash.bashrc
 
 # Node.js 16.x 설치
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
@@ -60,7 +63,17 @@ RUN tar -xvzf git-2.33.1.tar.gz
 WORKDIR /usr/src/git-2.33.1
 RUN ./configure --prefix=/usr/local/git
 RUN make && make install
-RUN sed -i'' -r -e "/export LANG=ko_KR.UTF-8/a\export PATH=\$PATH:/usr/local/git/bin" /etc/bash.bashrc
+RUN export PATH=$PATH:/usr/local/git/bin
+RUN sed -i'' -r -e "/service mysql start/a\export PATH=\$PATH:/usr/local/git/bin\n\# t20211225123700" /etc/bash.bashrc
+
+# node-graphql-mysql-sequelize-template 레포지토리 clone 하기
+WORKDIR /home
+RUN git clone https://github.com/wisdomstar94/node-graphql-mysql-sequelize-template.git
+WORKDIR /home/node-graphql-mysql-sequelize-template
+RUN sequelize db:migrate
+
+# 컨테이너 실행시 node-graphql-mysql-sequelize-template 이 자동으로 실행되게 설정
+RUN sed -i'' -r -e "/t20211225123700/a\pushd /home/node-graphql-mysql-sequelize-template\npm2 start pm2.config.js\npopd" /etc/bash.bashrc
 
 # 컨테이너가 시작될 때마다 실행할 명령어(커맨드) 설정
 CMD ["/bin/bash"]

@@ -1,6 +1,8 @@
 const { gql } = require('apollo-server-express');
 
 const type = gql`
+  scalar Date
+
   type TbProducts {
     id: Int!
     productName: String!
@@ -10,16 +12,17 @@ const type = gql`
   }
 
   input TbProductInput {
-    productName: String!
-    productDescription: String!
-    productPrice: Int!
+    productName: String
+    productDescription: String
+    productPrice: Int
   }
 
   type TbProductInputResponse {
+    id: Int
     productName: String!
     productDescription: String!
     productPrice: Int!
-    createdAt: String!
+    createdAt: Date
   }
 
   extend type Mutation {
@@ -27,8 +30,8 @@ const type = gql`
   }
 
   extend type Query {
-    getAllProducts: [TbProducts]!
-    getSingleProduct(id: Int!): TbProducts
+    products(input: TbProductInput): [TbProducts]!
+    product(id: Int!): TbProducts
   }
 `;
 

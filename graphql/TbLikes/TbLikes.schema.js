@@ -1,6 +1,8 @@
 const { gql } = require('apollo-server-express');
 
 const type = gql`
+  scalar Date
+
   type TbLikes {
     id: Int!
     tbusers_id: Int!    
@@ -9,14 +11,14 @@ const type = gql`
   }
 
   input TbLikeInput {
-    tbusers_id: Int!    
-    tbproducts_id: Int!
+    tbusers_id: Int  
+    tbproducts_id: Int
   }
 
   type TbLikeInputResponse {
     tbusers_id: Int!    
     tbproducts_id: Int!
-    createdAt: String!
+    createdAt: Date!
   }
 
   extend type Mutation {
@@ -24,8 +26,8 @@ const type = gql`
   }
 
   extend type Query {
-    getAllLikes: [TbLikes]!
-    getSingleLike(id: Int!): TbLikes
+    likes(input: TbLikeInput): [TbLikes]!
+    like(id: Int!): TbLikes
   }
 `;
 

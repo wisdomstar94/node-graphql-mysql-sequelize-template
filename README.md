@@ -33,10 +33,37 @@ Node.js의 Express프레임워크를 기반으로 Mysql을 Sequelize와 GraphQL�
 ## GraphQL 요청 및 응답 샘플 (POSTMAN 기준)
 
 ![sample-1](./images/sample_1.jpg)
+```graphql
+query {
+  users(input: {userAge:23}) {
+    id
+    userId
+    userAge
+    createdAt
+  }
+}
+```
 
 ![sample-2](./images/sample_2.jpg)
+```graphql
+query {
+  user(id: 2) {
+    id
+    userId
+    userAge
+    createdAt
+  }
+}
+```
 
 ![sample-3](./images/sample_3.jpg)
+```graphql
+mutation {
+  createUser(input: {userId: "test33", userAddr: "33", userAge: 33}) {
+    userId
+  }
+}
+```
 
 #
 

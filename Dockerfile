@@ -39,11 +39,15 @@ RUN sed -i'' -r -e "s/127.0.0.1/0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
 RUN service mysql start
 
 # Mysql 초기 설정
-RUN mysql -e "SET PASSWORD FOR root@localhost = PASSWORD('112233abc'); FLUSH PRIVILEGES;"
-RUN mysql -e "CREATE DATABASE test_database default CHARACTER SET=utf8 COLLATE=utf8_general_ci;"
-RUN mysql -e "CREATE USER 'root'@'172.17.0.1' IDENTIFIED BY '112233abc';"
-RUN mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'172.17.0.1' IDENTIFIED BY '112233abc' WITH GRANT OPTION;"
-RUN mysql -e "FLUSH PRIVILEGES;"
+# RUN mysql -e "SET PASSWORD FOR root@localhost = PASSWORD('112233abc'); FLUSH PRIVILEGES;"
+# RUN mysql -e "CREATE DATABASE test_database default CHARACTER SET=utf8 COLLATE=utf8_general_ci;"
+# RUN mysql -e "CREATE USER 'root'@'172.17.0.1' IDENTIFIED BY '112233abc';"
+# RUN mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'172.17.0.1' IDENTIFIED BY '112233abc' WITH GRANT OPTION;"
+# RUN mysql -e "FLUSH PRIVILEGES;"
+COPY mysql_init.sh /home/mysql_init.sh
+WORKDIR /home
+RUN sed -i 's/\r$//' mysql_init.sh
+RUN sh mysql_init.sh 
 
 # 컨테이너 실행시 Mysql 자동 시작되도록 설정
 RUN sed -i'' -r -e "/export LANG=ko_KR.UTF-8/a\service mysql start" /etc/bash.bashrc
@@ -68,9 +72,12 @@ RUN sed -i'' -r -e "/service mysql start/a\export PATH=\$PATH:/usr/local/git/bin
 
 # node-graphql-mysql-sequelize-template 레포지토리 clone 하기
 WORKDIR /home
-RUN git clone https://github.com/wisdomstar94/node-graphql-mysql-sequelize-template.git
+RUN /usr/local/git/bin/git clone https://github.com/wisdomstar94/node-graphql-mysql-sequelize-template.git
 WORKDIR /home/node-graphql-mysql-sequelize-template
-RUN sequelize db:migrate
+RUN npm i
+
+# 컨테이너 실행시 sequelize migrate가 자동으로 실행되게 설정
+RUN sed -i'' -r -e "/t20211225123700/a\npx sequelize db:migrate" /etc/bash.bashrc
 
 # 컨테이너 실행시 node-graphql-mysql-sequelize-template 이 자동으로 실행되게 설정
 RUN sed -i'' -r -e "/t20211225123700/a\pushd /home/node-graphql-mysql-sequelize-template\npm2 start pm2.config.js\npopd" /etc/bash.bashrc

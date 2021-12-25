@@ -1,0 +1,5 @@
+#!/bin/bash
+
+service mysql start
+(echo "SET PASSWORD FOR root@localhost = PASSWORD('112233abc'); FLUSH PRIVILEGES; CREATE DATABASE test_database default CHARACTER SET=utf8 COLLATE=utf8_general_ci; CREATE USER 'test'@'172.17.0.1' IDENTIFIED BY '112233abc'; GRANT ALL PRIVILEGES ON *.* TO 'test'@'172.17.0.1' IDENTIFIED BY '112233abc' WITH GRANT OPTION; CREATE USER 'test'@'localhost' IDENTIFIED BY '112233abc'; GRANT ALL PRIVILEGES ON *.* TO 'test'@'localhost' IDENTIFIED BY '112233abc' WITH GRANT OPTION; FLUSH PRIVILEGES;";) | mysql
+

@@ -27,6 +27,7 @@ Node.js의 Express프레임워크를 기반으로 Mysql을 Sequelize와 GraphQL�
 - port : 3306
 - id : test
 - pw : 112233abc
+- database : test_database
 
 #
 

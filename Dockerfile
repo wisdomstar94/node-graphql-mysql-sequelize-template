@@ -44,10 +44,12 @@ RUN service mysql start
 # RUN mysql -e "CREATE USER 'root'@'172.17.0.1' IDENTIFIED BY '112233abc';"
 # RUN mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'172.17.0.1' IDENTIFIED BY '112233abc' WITH GRANT OPTION;"
 # RUN mysql -e "FLUSH PRIVILEGES;"
-COPY mysql_init.sh /home/mysql_init.sh
-WORKDIR /home
+COPY mysql_init /home/mysql_init
+WORKDIR /home/mysql_init
 RUN sed -i 's/\r$//' mysql_init.sh
+RUN sed -i 's/\r$//' mysql_init_data.sh
 RUN sh mysql_init.sh 
+RUN sh mysql_init_data.sh 
 
 # 컨테이너 실행시 Mysql 자동 시작되도록 설정
 RUN sed -i'' -r -e "/export LANG=ko_KR.UTF-8/a\service mysql start" /etc/bash.bashrc
@@ -77,7 +79,7 @@ WORKDIR /home/node-graphql-mysql-sequelize-template
 RUN npm i
 
 # 컨테이너 실행시 sequelize migrate가 자동으로 실행되게 설정
-RUN sed -i'' -r -e "/t20211225123700/a\npx sequelize db:migrate" /etc/bash.bashrc
+RUN sed -i'' -r -e "/t20211225123700/a\pushd /home/node-graphql-mysql-sequelize-template\nnpx sequelize db:migrate\npopd" /etc/bash.bashrc
 
 # 컨테이너 실행시 node-graphql-mysql-sequelize-template 이 자동으로 실행되게 설정
 RUN sed -i'' -r -e "/t20211225123700/a\pushd /home/node-graphql-mysql-sequelize-template\npm2 start pm2.config.js\npopd" /etc/bash.bashrc

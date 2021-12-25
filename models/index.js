@@ -44,5 +44,21 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+// 공통으로 사용할 함수 선언
+db.isExistTable = async(tableName) => {
+  const result = await sequelize.query(`
+      SHOW TABLES IN ${process.env.MAIN_DB_DEFAULT_DATABASE} LIKE ${sequelize.escape(tableName)};
+    `, { 
+      type: QueryTypes.SELECT 
+    }
+  );
+
+  if (result.length > 0) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 // db 오브젝트를 모듈로써 내보내기
 module.exports = db;

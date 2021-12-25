@@ -23,7 +23,7 @@ RUN apt-get install language-pack-ko -y
 RUN locale-gen ko_KR.UTF-8
 RUN update-locale LANG=ko_KR.UTF-8 LC_MESSAGES=POSIX
 RUN export LANG=ko_KR.UTF-8
-RUN sed -i'' -r -e "/this file has to be sourced in/a\export LANG=ko_KR.UTF-8" /etc/bash.bashrc
+RUN sed -i'' -r -e "/\#fi/a\export LANG=ko_KR.UTF-8" /root/.bashrc
 
 # Mysql 5.7 설치하기 전 필요한 패키지 설치
 RUN apt-get install -y lsb-release gnupg 
@@ -52,7 +52,7 @@ RUN sh mysql_init.sh
 RUN sh mysql_init_data.sh 
 
 # 컨테이너 실행시 Mysql 자동 시작되도록 설정
-RUN sed -i'' -r -e "/export LANG=ko_KR.UTF-8/a\service mysql start" /etc/bash.bashrc
+RUN sed -i'' -r -e "/export LANG=ko_KR.UTF-8/a\service mysql start" /root/.bashrc
 
 # Node.js 16.x 설치
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
@@ -70,7 +70,7 @@ WORKDIR /usr/src/git-2.33.1
 RUN ./configure --prefix=/usr/local/git
 RUN make && make install
 RUN export PATH=$PATH:/usr/local/git/bin
-RUN sed -i'' -r -e "/service mysql start/a\export PATH=\$PATH:/usr/local/git/bin\n\# t20211225123700" /etc/bash.bashrc
+RUN sed -i'' -r -e "/service mysql start/a\export PATH=\$PATH:/usr/local/git/bin\n\# t20211225123700" /root/.bashrc
 
 # node-graphql-mysql-sequelize-template 레포지토리 clone 하기
 WORKDIR /home
@@ -79,10 +79,10 @@ WORKDIR /home/node-graphql-mysql-sequelize-template
 RUN npm i
 
 # 컨테이너 실행시 sequelize migrate가 자동으로 실행되게 설정
-RUN sed -i'' -r -e "/t20211225123700/a\pushd /home/node-graphql-mysql-sequelize-template\nnpx sequelize db:migrate\npopd" /etc/bash.bashrc
+RUN sed -i'' -r -e "/t20211225123700/a\pushd /home/node-graphql-mysql-sequelize-template\nnpx sequelize db:migrate\npopd" /root/.bashrc
 
 # 컨테이너 실행시 node-graphql-mysql-sequelize-template 이 자동으로 실행되게 설정
-RUN sed -i'' -r -e "/t20211225123700/a\pushd /home/node-graphql-mysql-sequelize-template\npm2 start pm2.config.js\npopd" /etc/bash.bashrc
+RUN sed -i'' -r -e "/t20211225123700/a\pushd /home/node-graphql-mysql-sequelize-template\npm2 start pm2.config.js\npopd" /root/.bashrc
 
 # 컨테이너가 LISTEN 할 포트 지정
 EXPOSE 3306

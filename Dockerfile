@@ -75,6 +75,13 @@ RUN sequelize db:migrate
 # 컨테이너 실행시 node-graphql-mysql-sequelize-template 이 자동으로 실행되게 설정
 RUN sed -i'' -r -e "/t20211225123700/a\pushd /home/node-graphql-mysql-sequelize-template\npm2 start pm2.config.js\npopd" /etc/bash.bashrc
 
+# 컨테이너가 LISTEN 할 포트 지정
+EXPOSE 3306
+EXPOSE 8040
+
+# home 경로로 이동
+WORKDIR /home
+
 # 컨테이너가 시작될 때마다 실행할 명령어(커맨드) 설정
 CMD ["/bin/bash"]
 
